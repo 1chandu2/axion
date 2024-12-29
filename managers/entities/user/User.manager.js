@@ -14,7 +14,7 @@ module.exports = class User {
         this.responseDispatcher  = managers.responseDispatcher;
         this.shark               = managers.shark;
         this.usersCollection     = "users";
-        this.httpExposed         = ["createUser", "getUser"];
+        this.httpExposed         = ["createUser", "getUser", "loginUser"];
         this.UserCRUD            = new UserCRUD(this.mongomodels.User);
     }
 
@@ -143,7 +143,7 @@ module.exports = class User {
         
         // Get users from db
         try {
-            result = await this.UserCRUD.findUsers({ username })
+            result = await this.UserCRUD.findUsers({ username: username })
         } catch(error) {
             this.responseDispatcher.dispatch(res, {
                 ok: false,
@@ -163,6 +163,67 @@ module.exports = class User {
           return getSelfHandleResponse();
         }
 
-        return result;
-    }    
+        const { password: _password, ...userWithoutPassword } = result[0]._doc;
+      
+        // Response
+        return {
+            user: userWithoutPassword
+        };
+    }
+    
+    async loginUser({ email, password, res }) {
+        // User login request validation
+        const result = await this.validators.user.loginUser({ email, password });
+        if (result) return result;
+
+        //Handle validation error
+        if (result) {
+            this.responseDispatcher.dispatch(res, {
+                ok: false,
+                code: 400,
+                message: "Validation failed",
+                data: result,
+            });
+            return getSelfHandleResponse();
+        }
+    
+        // Get user from db
+        const user = await this.UserCRUD.findUsers({ email : email })
+          
+        // Handle Not Found
+        if (user.length == 0) {
+            this.responseDispatcher.dispatch(res, {
+            ok: false,
+            code: 404,
+            message: "Request user not present in system",
+            });
+            return getSelfHandleResponse();
+        } 
+    
+        // Compare password
+        const compare = this.hasher.compare(password, user[0].password);
+        if (!compare) {
+          this.responseDispatcher.dispatch(res, {
+            ok: false,
+            code: 401,
+            message: "provided password is incorrect",
+          });
+          return getSelfHandleResponse();
+        }
+
+        // Generate long token
+        let longToken = this.tokenManager.genLongToken({
+            userId: user[0].email,
+            userKey: user[0].key,
+          });
+      
+        const { password: _password, ...userWithoutPassword } = user[0]._doc;
+      
+        // Response
+        return {
+            user: userWithoutPassword,
+            longToken,
+        };
+    }
+    
 }
