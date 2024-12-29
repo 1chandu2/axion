@@ -14,6 +14,9 @@ const SharkFin              = require('../managers/shark_fin/SharkFin.manager');
 const TimeMachine           = require('../managers/time_machine/TimeMachine.manager');
 
 const UserManager           = require('../managers/entities/user/User.manager');
+const SchoolManager         = require('../managers/entities/school/School.manager');
+const ClassManager          = require('../managers/entities/class/Class.manager');
+const StudentManager        = require('../managers/entities/student/Student.manager');
 const MongoLoader           = require('../loaders/MongoLoader');
 const HashManager           = require('../managers/hashing/Hash.manager');
 /** 
@@ -71,8 +74,11 @@ module.exports = class ManagersLoader {
         this.managers.token               = new TokenManager(this.injectable);
         this.managers.hasher              = new HashManager(this.injectable);
         this.managers.user                = new UserManager({ ...this.injectable, managers: this.managers });
+        this.managers.school              = new SchoolManager({ ...this.injectable, managers: this.managers });
+        this.managers.class               = new ClassManager({ ...this.injectable, managers: this.managers });
+        this.managers.student             = new StudentManager({ ...this.injectable, managers: this.managers });
         /*************************************************************************************************/
-        this.managers.mwsExec            = new VirtualStack({ ...{ preStack: ['__log', '__device'] }, ...this.injectable });
+        this.managers.mwsExec             = new VirtualStack({ ...{ preStack: ['__log', '__device'] }, ...this.injectable });
         this.managers.userApi             = new ApiHandler({...this.injectable,...{prop:'httpExposed'}});
         this.managers.userServer          = new UserServer({ config: this.config, managers: this.managers });
 
