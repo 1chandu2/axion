@@ -13,9 +13,9 @@ const TokenManager          = require('../managers/token/Token.manager');
 const SharkFin              = require('../managers/shark_fin/SharkFin.manager');
 const TimeMachine           = require('../managers/time_machine/TimeMachine.manager');
 
-const UserManager                  = require('../managers/entities/user/User.manager');
+const UserManager           = require('../managers/entities/user/User.manager');
 const MongoLoader           = require('../loaders/MongoLoader');
-
+const HashManager           = require('../managers/hashing/Hash.manager');
 /** 
  * load sharable modules
  * @return modules tree with instance of each module
@@ -69,7 +69,8 @@ module.exports = class ManagersLoader {
         this.managers.shark               = new SharkFin({ ...this.injectable, layers, actions });
         this.managers.timeMachine         = new TimeMachine(this.injectable);
         this.managers.token               = new TokenManager(this.injectable);
-        this.managers.user                = new UserManager({ ...this.injectable, managers: this.managers })
+        this.managers.hasher              = new HashManager(this.injectable);
+        this.managers.user                = new UserManager({ ...this.injectable, managers: this.managers });
         /*************************************************************************************************/
         this.managers.mwsExec             = new VirtualStack({ ...{ preStack: [/* '__token', */'__device',] }, ...this.injectable });
         this.managers.userApi             = new ApiHandler({...this.injectable,...{prop:'httpExposed'}});

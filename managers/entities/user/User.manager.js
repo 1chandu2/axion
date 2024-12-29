@@ -5,6 +5,7 @@ module.exports = class User {
 
     constructor({utils, cache, config, cortex, managers, validators, mongomodels }={}){
         this.utils               = utils;
+        this.hasher              = managers.hasher;
         this.config              = config;
         this.cortex              = cortex;
         this.validators          = validators; 
@@ -32,8 +33,9 @@ module.exports = class User {
             });
             return getSelfHandleResponse();
         }
-    
-        const newUser = new this.mongomodels.User({ ...user, role: role || "user" });
+
+        const hashedPassword = this.hasher.encrypt(password);
+        const newUser = new this.mongomodels.User({ ...user, password: hashedPassword, role: role || "user" });
         try {
             await this.UserCRUD.saveUser(newUser);
         } catch (error) {
