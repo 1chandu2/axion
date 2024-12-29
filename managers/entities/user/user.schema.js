@@ -30,6 +30,25 @@ module.exports = {
           required: true,
         },
     ],
+    loginUser: [
+        {
+            model: "email",
+            path: "email",
+            required: true,
+        },
+        {
+            model: "password",
+            path: "password",
+            required: true
+        },
+    ],
+    deleteUser: [
+        {
+            model: "username",
+            path: "username",
+            required: true,
+        },
+    ],
 }
 
 
