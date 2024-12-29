@@ -5,14 +5,14 @@ const md5        = require('md5');
 module.exports = class SharkFin {
 
   constructor({ config, layers, actions, cache, managers,utils, oyster}) {
-    this.config  = config;
-    this.utils   = utils;
-    this.oyster  = oyster;
+    this.config       = config;
+    this.utils        = utils;
+    this.oyster       = oyster;
     this.contentToken = managers.contentToken;
-    this.layers  = layers;
-    this.actions = actions;
-    this.wildAccess = {};
-    this.userAccess = {};
+    this.layers       = layers;
+    this.actions      = actions;
+    this.wildAccess   = {};
+    this.userAccess   = {};
     /** make sure the ranks doesn't have a zero rank. */
     if (Object.values(this.actions).includes(0)) { throw Error("dont use 0 as a rank") }
 
@@ -58,7 +58,7 @@ module.exports = class SharkFin {
   }
 
   addDirectAccess({ userId, nodeId, action }) {
-    this.oyster.call('update_relations', {
+    return this.oyster.call('update_relations', {
       _id: `user:${userId}`,
       set: {
         _members: [`node:${nodeId}~${this.actions[action]}:!`],
@@ -146,7 +146,7 @@ module.exports = class SharkFin {
     return this.layers;
   }
 
-  async isGranted({ layer, variant, userId, nodeId, action, isOwner, childLayer }) {
+  async isGranted({ layer, variant, userId, nodeId, action, isOwner, childLayer, role }) {
     let inqueryActionRank = this._getActionRank({ action, ceil: true });
 
     let curentNodeId = null;
@@ -185,10 +185,22 @@ module.exports = class SharkFin {
     /** check if the default action would allow **/
     if (layerConfig.anyoneCan) {
       let layerActionRank = this._getActionRank({ action: layerConfig.anyoneCan });
+      // console.log(`layerActionRank`, layerActionRank, inqueryActionRank, layerConfig.anyoneCan, action);
       /** granted by default access **/
       /** enable block on resource is another story, because at this point
           we will need to create a block list for the resource itself**/  
       if (layerActionRank >= inqueryActionRank) return true;
+    }
+    /*******************************USER ACCESS*******************************/ 
+      if(layerConfig.adminCan && role == 'admin') {
+        const layerAdminActionRank = this._getActionRank({ action: layerConfig.adminCan });
+      // console.log(`layerActionRank>`, layerAdminActionRank, inqueryActionRank, layerConfig.adminCan, action);
+        if (layerAdminActionRank >= inqueryActionRank) return true;
+      }
+    if (layerConfig.superAdminCan && role == 'superadmin') {
+      const layerSuperAdminActionRank = this._getActionRank({ action: layerConfig.superAdminCan });
+      // console.log(`layerActionRank>>`, layerSuperAdminActionRank, inqueryActionRank, layerConfig.superAdminCan, action);
+      if (layerSuperAdminActionRank >= inqueryActionRank) return true;
     }
     /******************************DIRECT ACCESS******************************/
     if (nodeId && userId) {
@@ -210,7 +222,7 @@ module.exports = class SharkFin {
 
   async _checkInheritance({ layerConfig, layer, nodeId, variant, userId, action, isOwner }) {
     if (layerConfig.inherit) {
-      console.log(`~ lets inherit`)
+      // console.log(`~ lets inherit`)
       /** if the layer allows inhertance **/
       let parentLayer = this._getParentLayerPath({ layer });
       let parentId = null;

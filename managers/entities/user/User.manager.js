@@ -12,9 +12,67 @@ module.exports = class User {
         this.mongomodels         = mongomodels;
         this.tokenManager        = managers.token;
         this.responseDispatcher  = managers.responseDispatcher;
+        this.shark               = managers.shark;
         this.usersCollection     = "users";
         this.httpExposed         = ["createUser", "getUser"];
         this.UserCRUD            = new UserCRUD(this.mongomodels.User);
+    }
+
+    async #setPermission({ userId, role }) {
+        const addDirectAccess = ({ nodeId, layer, action }) => {
+          return this.shark.addDirectAccess({
+            userId,
+            nodeId,
+            layer,
+            action,
+          });
+        };
+    
+        const lookupTable = {
+          admin: async () => {
+            const items = [
+              {
+                nodeId: "board.school",
+                layer: "board.school",
+                action: "read",
+              },
+              {
+                nodeId: "board.school.class",
+                layer: "board.school.class",
+                action: "delete",
+              },
+              {
+                nodeId: "board.school.class.student",
+                layer: "board.school.class.student",
+                action: "update",
+              },
+            ];
+            for (const item of items) {
+              await addDirectAccess(item);
+            }
+          },
+          superadmin: async () => {
+            const items = [
+              {
+                nodeId: "board.school",
+                layer: "board.school",
+                action: "delete",
+              },
+              {
+                nodeId: "board.school.class",
+                layer: "board.school.class",
+                action: "read",
+              },
+            ];
+            for (const item of items) {
+              await addDirectAccess(item);
+            }
+          },
+        };
+    
+        if (lookupTable[role]) {
+          await lookupTable[role]();
+        }
     }
 
     async createUser({ username, email, password, role, res }) {
@@ -62,6 +120,7 @@ module.exports = class User {
             return getSelfHandleResponse();
         }
 
+        this.#setPermission({ userId: newUser.email, role: newUser.role });
         let longToken = this.tokenManager.genLongToken({
             userId: newUser.email,
             userKey: newUser.key,
