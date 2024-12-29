@@ -102,4 +102,8 @@ module.exports = {
     bool: {
         type: 'Boolean',
     },
+    role: {
+        type: 'String',
+        regex: /^(admin|user|superadmin)$/,
+    }
 }
