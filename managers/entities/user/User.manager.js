@@ -1,5 +1,5 @@
 const getSelfHandleResponse = require("../../api/_common/getSelfResponse");
-const UserCRUD = require('./UserCRUD');
+const UserCRUD = require("./UserCRUD");
 
 module.exports = class User { 
 
@@ -14,7 +14,7 @@ module.exports = class User {
         this.responseDispatcher  = managers.responseDispatcher;
         this.shark               = managers.shark;
         this.usersCollection     = "users";
-        this.httpExposed         = ["createUser", "getUser", "loginUser", "deleteUser"];
+        this.httpExposed         = ["createUser", "get=getUser", "loginUser", "delete=deleteUser"];
         this.UserCRUD            = new UserCRUD(this.mongomodels.User);
     }
 
@@ -83,13 +83,7 @@ module.exports = class User {
 
         //Handle validation error
         if (validationResult) {
-            this.responseDispatcher.dispatch(res, {
-                ok: false,
-                code: 400,
-                message: "Validation failed",
-                data: validationResult,
-            });
-            return getSelfHandleResponse();
+            return validationResult;
         }
 
         const hashedPassword = this.hasher.encrypt(password);
@@ -97,27 +91,7 @@ module.exports = class User {
         try {
             await this.UserCRUD.saveUser(newUser);
         } catch (error) {
-    
-            // Default error code and message
-            let code = 500;
-            let message = "Error while saving the user";
-        
-            // Duplicate key error
-            if (error.code === 11000) {
-                const fieldName = Object.keys(error.keyValue)[0];
-                const fieldValue = error.keyValue[fieldName];
-                code = 409;
-                message = `User with this ${fieldName} (${fieldValue}) already exists in the system.`;
-            }
-        
-            // Dispatch the response
-            this.responseDispatcher.dispatch(res, {
-                ok: false,
-                code: code,
-                message: message,
-            });
-
-            return getSelfHandleResponse();
+            return this.#handleError(error, res);
         }
 
         this.#setPermission({ userId: newUser.email, role: newUser.role });
@@ -135,32 +109,24 @@ module.exports = class User {
         };
     }
 
-    async getUser({username, res}) {
+    async getUser({__query, res}) {
+
+        const { id } = __query;
         
         // User get request validation
-        let result = await this.validators.user.getUser({ username });
+        let result = await this.validators.user.getUser({ id });
         if (result) return result;
         
         // Get users from db
         try {
-            result = await this.UserCRUD.findUsers({ username: username })
+            result = await this.UserCRUD.findUsers({ _id: id })
         } catch(error) {
-            this.responseDispatcher.dispatch(res, {
-                ok: false,
-                code: 500,
-                message: "Error while retrieving the user",
-              });
-              return getSelfHandleResponse();
+            return this.#handleServerError(res);
         }
 
         // Handle Not Found
         if (result.length == 0) {
-          this.responseDispatcher.dispatch(res, {
-            ok: false,
-            code: 404,
-            message: "Request user not present in system",
-          });
-          return getSelfHandleResponse();
+            return this.#handleNotFound(res, "user");
         }
 
         const { password: _password, ...userWithoutPassword } = result[0]._doc;
@@ -173,40 +139,24 @@ module.exports = class User {
     
     async loginUser({ email, password, res }) {
         // User login request validation
-        const result = await this.validators.user.loginUser({ email, password });
+        let result = await this.validators.user.loginUser({ email, password });
         if (result) return result;
 
         //Handle validation error
         if (result) {
-            this.responseDispatcher.dispatch(res, {
-                ok: false,
-                code: 400,
-                message: "Validation failed",
-                data: result,
-            });
-            return getSelfHandleResponse();
+            return result;
         }
 
         // Get users from db
         try {
             result = await this.UserCRUD.findUsers({ email: email })
         } catch(error) {
-            this.responseDispatcher.dispatch(res, {
-                ok: false,
-                code: 500,
-                message: "Error while retrieving the user",
-              });
-              return getSelfHandleResponse();
+            return this.#handleServerError(res);
         }
           
         // Handle Not Found
         if (result.length == 0) {
-            this.responseDispatcher.dispatch(res, {
-            ok: false,
-            code: 404,
-            message: "Request user not present in system",
-            });
-            return getSelfHandleResponse();
+            return this.#handleNotFound(res, "user");
         } 
     
         // Compare password with existing user
@@ -235,62 +185,75 @@ module.exports = class User {
         };
     }
 
-    async deleteUser({ username, res }) {
+    async deleteUser({ __query, res }) {
+
+        const { id } = __query;
         
         // User delete request validation
-        let result = await this.validators.user.deleteUser({ username });
+        let result = await this.validators.user.deleteUser({ id });
 
         //Handle validation error
         if (result) {
-            this.responseDispatcher.dispatch(res, {
-                ok: false,
-                code: 400,
-                message: "Validation failed",
-                data: result,
-            });
-            return getSelfHandleResponse();
-        }
-        
-        // Get users from db
-        try {
-            result = await this.UserCRUD.findUsers({ username: username })
-        } catch(error) {
-            this.responseDispatcher.dispatch(res, {
-                ok: false,
-                code: 500,
-                message: "Error while retrieving the user",
-              });
-              return getSelfHandleResponse();
-        }
-
-        // Handle Not Found
-        if (result.length == 0) {
-          this.responseDispatcher.dispatch(res, {
-            ok: false,
-            code: 404,
-            message: "Request user not present in system",
-          });
-          return getSelfHandleResponse();
+            return result;
         }
     
-        // Delete user from db
+        // delete user from db
         try {
-            await this.UserCRUD.deleteUser({ username: username })
+            result = await this.UserCRUD.deleteUser({ _id: id })
         } catch(error) {
-            this.responseDispatcher.dispatch(res, {
-                ok: false,
-                code: 500,
-                message: "Error while retrieving the user",
-              });
-              return getSelfHandleResponse();
+            return this.#handleServerError(res);
         }
 
-        const { password: _password, ...userWithoutPassword } = result[0]._doc;
-      
-        // Response
-        return {
-            deleted_user: userWithoutPassword
-        };
+        if(result.deletedCount == 0) {
+            return this.#handleNotFound(res, "user");
+        } else {
+            return {
+                id: id, 
+                message: "Requested user is successfully deleted"
+            };
+        }
     }
+    
+
+    async #handleError(error, res) {
+        // Default error code and message
+        let code = 500;
+        let message = "Error while saving the user";
+    
+        // Duplicate key error
+        if (error.code === 11000) {
+            const fieldName = Object.keys(error.keyValue)[0];
+            const fieldValue = error.keyValue[fieldName];
+            code = 409;
+            message = `user with this ${fieldName} (${fieldValue}) already exists in the system.`;
+        }
+    
+        // Dispatch the response
+        this.responseDispatcher.dispatch(res, {
+            ok: false,
+            code: code,
+            message: message,
+        });
+    
+        return getSelfHandleResponse();
+      }
+    
+      async #handleServerError(res) {
+        this.responseDispatcher.dispatch(res, {
+            ok: false,
+            code: 500,
+            message: "Error while retrieving the user",
+        });
+        return getSelfHandleResponse();
+      }
+    
+      async #handleNotFound(res, entity) {
+        this.responseDispatcher.dispatch(res, {
+            ok: false,
+            code: 404,
+            message: `Requested ${entity} not present in system`,
+            });
+        return getSelfHandleResponse();
+      }
     
 }

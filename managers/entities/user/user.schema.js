@@ -25,8 +25,8 @@ module.exports = {
     ],
     getUser: [
         {
-          model: "username",
-          path: "username",
+          model: "id",
+          path: "id",
           required: true,
         },
     ],
@@ -44,11 +44,11 @@ module.exports = {
     ],
     deleteUser: [
         {
-            model: "username",
-            path: "username",
+            type: "String",
+            path: "id",
             required: true,
         },
-    ],
+    ]
 }
 
 
