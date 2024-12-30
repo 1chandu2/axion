@@ -17,6 +17,7 @@ module.exports = class School {
       "get=getSchool",
       "delete=deleteSchool",
       "put=updateSchool",
+      "get=getAllSchool",
     ];
     this.StudentCRUD        = new StudentCRUD(this.mongomodels.Student);
     this.ClassCRUD          = new ClassCRUD(this.mongomodels.Class);
@@ -208,6 +209,30 @@ module.exports = class School {
 
     } catch(error) {
         console.error("We are getting the server error while deletion school from database: ", error);
+        return this.#handleServerError(res);
+    }
+  }
+
+  async getAllSchool({ __token, res }) {
+    
+    const { userId } = __token;
+
+    // Permission check 
+    const canGetSchool = await this.#checkPermission({
+      userId,
+      action: "read",
+    });
+
+    if (canGetSchool.error) {
+      return this.#handleForbiddenError(res, canGetSchool.error);
+    }
+
+    // Get school from db
+    try {
+        let result = await this.SchoolCRUD.findSchools({ });
+        return result;
+    } catch(error) {
+        console.error("We are getting the server error while retrieving school from database: ", error);
         return this.#handleServerError(res);
     }
   }
