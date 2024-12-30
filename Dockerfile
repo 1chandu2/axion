@@ -17,6 +17,8 @@ COPY . .
 ENV LONG_TOKEN_SECRET='chandra123'
 ENV SHORT_TOKEN_SECRET='chandra123'
 ENV NACL_SECRET='chandra123'
+ENV REDIS_URI='redis://redis:6379'
+ENV MONGO_URI='mongodb://mongo:27017/axion'
 
 EXPOSE 5111
 
