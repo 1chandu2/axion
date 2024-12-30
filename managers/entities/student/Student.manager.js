@@ -65,7 +65,7 @@ module.exports = class Student {
     });
 
     if (canCreateStudent.error) {
-      return canCreateStudent;
+      return this.#handleForbiddenError(res, canCreateStudent.error);
     }
 
     const student = { name, classId };
@@ -113,7 +113,7 @@ module.exports = class Student {
     });
 
     if (canGetStudent.error) {
-      return canGetStudent;
+      return this.#handleForbiddenError(res, canGetStudent.error);
     }
 
     const { id } = __query;
@@ -149,7 +149,7 @@ module.exports = class Student {
     });
 
     if (canUpdateStudent.error) {
-      return canUpdateStudent;
+      return this.#handleForbiddenError(res, canUpdateStudent.error);
     }
 
     const student = { name, classId };
@@ -162,6 +162,20 @@ module.exports = class Student {
 
     if (result) return result;
 
+    // Get student from db
+    try {
+        result = await this.StudentCRUD.findStudents({ _id: id });
+    } catch(error) {
+        console.error("We are getting the server error while retrieving class from database: ", error);
+        return this.#handleServerError(res);
+    }
+
+    if(result.length == 0) {
+        return this.#handleNotFound(res, "student");
+    }
+
+    const currentClassId = result[0]._doc.classId;
+    const schoolId = result[0]._doc.schoolId;
 
     // Get class from db
     try {
@@ -174,11 +188,25 @@ module.exports = class Student {
     if(result.length == 0) {
         return this.#handleNotFound(res, "class");
     }
+    const newClassSchoolId = result[0]._doc.schoolId;
 
-    const schoolId = result[0]._doc.schoolId;
     const toUpdateStudent = {...student, schoolId: schoolId}
     // Update student in datbase
     try {
+        if(currentClassId.toString() != classId) {
+            // Means want to promote to another class
+            if(newClassSchoolId.toString() != schoolId.toString()) {
+                this.responseDispatcher.dispatch(res, {
+                    ok: false,
+                    code: 404,
+                    message: "The class in which you want to promote the student is not exist in the student's school",
+                    });
+                return getSelfHandleResponse();
+            } else {
+                await this.ClassCRUD.deleteStudentFromClass(currentClassId, id);
+                await this.ClassCRUD.addStudentToClass(classId, id);
+            }
+        } 
         result = await this.StudentCRUD.updateStudent({_id : id}, toUpdateStudent);
     } catch (error) {
         return this.#handleError(error, res);
@@ -191,8 +219,8 @@ module.exports = class Student {
     // Response
     return {
         id: id,
-        modifiedCount: modifiedCount,
-        upsertedCount: upsertedCount
+        modifiedCount: result.modifiedCount,
+        upsertedCount: result.upsertedCount
     };
   }
 
@@ -205,7 +233,7 @@ module.exports = class Student {
     });
 
     if (canDeleteStudent.error) {
-      return canDeleteStudent;
+      return this.#handleForbiddenError(res, canDeleteStudent.error);
     }
 
     // Data validation
@@ -288,6 +316,15 @@ module.exports = class Student {
         ok: false,
         code: 404,
         message: `Requested ${entity} not present in system`,
+        });
+    return getSelfHandleResponse();
+  }
+
+  async #handleForbiddenError(res, message) {
+    this.responseDispatcher.dispatch(res, {
+        ok: false,
+        code: 403,
+        message: message,
         });
     return getSelfHandleResponse();
   }

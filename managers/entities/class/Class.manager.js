@@ -61,7 +61,7 @@ module.exports = class Class {
     });
 
     if (canCreateClass.error) {
-      return canCreateClass;
+      return this.#handleForbiddenError(res, canCreateClass.error);
     }
 
     const toCreateClass = { name, schoolId };
@@ -105,7 +105,7 @@ module.exports = class Class {
     });
 
     if (canGetClass.error) {
-      return canGetClass
+      return this.#handleForbiddenError(res, canGetClass.error);
     }
 
     const { id } = __query;
@@ -141,7 +141,7 @@ module.exports = class Class {
     });
 
     if (canUpdateClass.error) {
-      return canUpdateClass;
+      return this.#handleForbiddenError(res, canUpdateClass.error);
     }
 
     const toUpdateClass = { name, schoolId };
@@ -168,8 +168,8 @@ module.exports = class Class {
     // Response
     return {
         id: id,
-        modifiedCount: modifiedCount,
-        upsertedCount: upsertedCount
+        modifiedCount: result.modifiedCount,
+        upsertedCount: result.upsertedCount
     };
   }
 
@@ -182,7 +182,7 @@ module.exports = class Class {
     });
 
     if (canDeleteClass.error) {
-      return canDeleteClass;
+      return this.#handleForbiddenError(res, canDeleteClass.error);
     }
 
     // Data validation
@@ -277,6 +277,15 @@ module.exports = class Class {
         ok: false,
         code: 404,
         message: `Requested ${entity} not present in system`,
+        });
+    return getSelfHandleResponse();
+  }
+
+  async #handleForbiddenError(res, message) {
+    this.responseDispatcher.dispatch(res, {
+        ok: false,
+        code: 403,
+        message: message,
         });
     return getSelfHandleResponse();
   }

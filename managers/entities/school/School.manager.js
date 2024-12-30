@@ -61,7 +61,7 @@ module.exports = class School {
     });
 
     if (canCreateSchool.error) {
-      return canCreateSchool;
+      return this.#handleForbiddenError(res, canCreateSchool.error);
     }
 
     const school = { name, address, phone };
@@ -94,7 +94,7 @@ module.exports = class School {
     });
 
     if (canGetSchool.error) {
-      return canGetSchool
+      return this.#handleForbiddenError(res, canGetSchool.error);
     }
 
     const { id } = __query;
@@ -129,7 +129,7 @@ module.exports = class School {
     });
 
     if (canUpdateSchool.error) {
-      return canUpdateSchool;
+      return this.#handleForbiddenError(res, canUpdateSchool.error);
     }
 
     const school = { name, address, phone, id };
@@ -153,8 +153,8 @@ module.exports = class School {
     // Response
     return {
         id: id,
-        modifiedCount: modifiedCount,
-        upsertedCount: upsertedCount
+        modifiedCount: result.modifiedCount,
+        upsertedCount: result.upsertedCount
     };
 
   }
@@ -168,7 +168,7 @@ module.exports = class School {
     });
 
     if (canDeleteSchool.error) {
-      return canDeleteSchool;
+      return this.#handleForbiddenError(res, canDeleteSchool.error);
     }
 
     const { id } = __query;
@@ -253,6 +253,15 @@ module.exports = class School {
         ok: false,
         code: 404,
         message: "Requested school not present in system",
+        });
+    return getSelfHandleResponse();
+  }
+
+  async #handleForbiddenError(res, message) {
+    this.responseDispatcher.dispatch(res, {
+        ok: false,
+        code: 403,
+        message: message,
         });
     return getSelfHandleResponse();
   }
