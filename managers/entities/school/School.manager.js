@@ -1,6 +1,8 @@
 const getSelfHandleResponse = require("../../api/_common/getSelfResponse");
 const SchoolCRUD = require("./SchoolCRUD");
 const UserCRUD = require("../user/UserCRUD");
+const ClassCRUD = require("../class/ClassCRUD");
+const StudentCRUD = require("../student/StudentCRUD");
 
 module.exports = class School {
   constructor({ utils, cache, managers, validators, mongomodels } = {}) {
@@ -16,6 +18,8 @@ module.exports = class School {
       "delete=deleteSchool",
       "put=updateSchool",
     ];
+    this.StudentCRUD        = new StudentCRUD(this.mongomodels.Student);
+    this.ClassCRUD          = new ClassCRUD(this.mongomodels.Class);
     this.SchoolCRUD         = new SchoolCRUD(this.mongomodels.School);
     this.UserCRUD           = new UserCRUD(this.mongomodels.User);
   }
@@ -102,6 +106,7 @@ module.exports = class School {
     try {
         result = await this.SchoolCRUD.findSchools({ _id: id });
     } catch(error) {
+        console.error("We are getting the server error while retrieving school from database: ", error);
         return this.#handleServerError(res);
     }
 
@@ -172,20 +177,38 @@ module.exports = class School {
     let result = await this.validators.school.deleteSchool({ id });
     if (result) return result;
 
-     // delete school from db
+     // School deletion logic
      try {
-        result = await this.SchoolCRUD.deleteSchool({ _id: id })
-    } catch(error) {
-        return this.#handleServerError(res);
-    }
+        const school = await this.SchoolCRUD.findSchools({_id: id});
+        if(school.length == 0) {
+            return this.#handleNotFound(res);
+        }
 
-    if(result.deletedCount == 0) {
-        return this.#handleNotFound(res);
-    } else {
-        return {
-            id: id, 
-            message: "Requested school is successfully deleted"
-        };
+        // Delete all related classes
+        const classDeleteResult = await this.ClassCRUD.deleteManyClass({ schoolId: id });
+
+        // Delete all students in the school
+        const studentDeleteResult = await this.StudentCRUD.deleteManyStudent({ schoolId: id });
+
+        // Delete School from db
+        result = await this.SchoolCRUD.deleteSchool({ _id: id })
+
+        if(result.deletedCount == 0) {
+            return this.#handleNotFound(res);
+        } else {
+            return {
+                id: id, 
+                message: "Requested school is successfully deleted",
+                details: {
+                    classesDeleted: classDeleteResult.deletedCount,
+                    studentsDeleted: studentDeleteResult.deletedCount,
+                },
+            };
+        }
+
+    } catch(error) {
+        console.error("We are getting the server error while deletion school from database: ", error);
+        return this.#handleServerError(res);
     }
   }
 
@@ -200,6 +223,10 @@ module.exports = class School {
         const fieldValue = error.keyValue[fieldName];
         code = 409;
         message = `School with this ${fieldName} (${fieldValue}) already exists in the system.`;
+    }
+
+    if(code == 500) {
+        console.error("We are getting the server error: ", error);
     }
 
     // Dispatch the response

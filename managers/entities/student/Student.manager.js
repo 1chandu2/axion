@@ -78,6 +78,7 @@ module.exports = class Student {
     try {
         result = await this.ClassCRUD.findClass({ _id: classId });
     } catch(error) {
+        console.error("We are getting the server error while retrieving class from database: ", error);
         return this.#handleServerError(res);
     }
 
@@ -125,6 +126,7 @@ module.exports = class Student {
     try {
         result = await this.StudentCRUD.findStudents({ _id: id });
     } catch(error) {
+        console.error("We are getting the server error while retrieving student from database: ", error);
         return this.#handleServerError(res);
     }
 
@@ -165,6 +167,7 @@ module.exports = class Student {
     try {
         result = await this.ClassCRUD.findClass({ _id: classId });
     } catch(error) {
+        console.error("We are getting the server error while retrieving class from database: ", error);
         return this.#handleServerError(res);
     }
 
@@ -213,18 +216,34 @@ module.exports = class Student {
     
     // delete class from db
     try {
-        result = await this.StudentCRUD.deleteStudent({ _id: id })
-    } catch(error) {
-        return this.#handleServerError(res);
-    }
+        result = await this.StudentCRUD.findStudents({_id: id});
 
-    if(result.deletedCount == 0) {
-        return this.#handleNotFound(res, "student");
-    } else {
-        return {
-            id: id, 
-            message: "Requested student is successfully deleted"
-        };
+        if(result.length == 0) {
+            return this.#handleNotFound(res);
+        }
+
+        const { classId, schoolId } = result[0]._doc;
+        
+        // Remove student from class
+        await this.ClassCRUD.deleteStudentFromClass(classId, id);
+
+        // Remove student from school
+        await this.SchoolCRUD.deleteStudentFromSchool(schoolId, id);
+
+        // Delete Student
+        result = await this.StudentCRUD.deleteStudent({ _id: id })
+
+        if(result.deletedCount == 0) {
+            return this.#handleNotFound(res, "student");
+        } else {
+            return {
+                id: id, 
+                message: "Requested student is successfully deleted"
+            };
+        }
+    } catch(error) {
+        console.error("We are getting the server error while deletion of student from database: ", error);
+        return this.#handleServerError(res);
     }
   }
 
@@ -239,6 +258,10 @@ module.exports = class Student {
         const fieldValue = error.keyValue[fieldName];
         code = 409;
         message = `Student with this ${fieldName} (${fieldValue}) already exists in the system.`;
+    }
+
+    if(code == 500) {
+        console.error("We are getting the server error: {}", error);
     }
 
     // Dispatch the response

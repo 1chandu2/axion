@@ -83,5 +83,18 @@ module.exports = class SchoolCRUD {
             throw error;
         }
     }
+
+    async deleteManyStudentFromSchool({ schoolId, studentIds }) {
+        try {
+            const result = await this.schoolModel.updateOne(
+                { _id: schoolId }, // Match the school by its ID
+                { $pull: { students: { $in: studentIds } } } // Remove students whose IDs are in the given list
+            );
+            return result;
+        } catch (error) {
+            console.error('Error deleting student from school:', error);
+            throw error;
+        }
+    }
     
 }

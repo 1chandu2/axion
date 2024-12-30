@@ -44,6 +44,16 @@ module.exports = class ClassCRUD {
         }
     }
 
+    async deleteManyClass(query) {
+        try {
+            const result = await this.classModel.deleteMany(query);
+            return result;
+        } catch (error) {
+            console.error('Error deleting classes:', error);
+            throw error;
+        }
+    }
+
     async addStudentToClass(classId, studentId) {
         try {
             const result = await this.classModel.updateOne({ _id: classId }, { $addToSet: { students: studentId } });
