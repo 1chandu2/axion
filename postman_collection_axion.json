@@ -1,0 +1,1749 @@
+{
+	"info": {
+		"_postman_id": "c29ef40c-f84b-42e6-998a-7535d7cb3719",
+		"name": "axion",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "10047537"
+	},
+	"item": [
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "Create Token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"    const jsonData = pm.response.json();",
+									"",
+									"",
+									"    pm.expect(jsonData.data.shortToken).to.not.null",
+									"",
+									"    pm.collectionVariables.set(\"shortToken\", jsonData.data.shortToken);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "token",
+								"value": "{{longToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/api/token/v1_createShortToken",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"token",
+								"v1_createShortToken"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"    const jsonData = pm.response.json();",
+									"",
+									"",
+									"    pm.expect(jsonData.data.longToken).to.not.null",
+									"",
+									"    pm.collectionVariables.set(\"longToken\", jsonData.data.longToken);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "token",
+								"value": "",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"Chandra101\",\n    \"email\": \"cppurbiya101@gmail.com\",\n    \"password\": \"12345678\",\n    \"role\": \"superadmin\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/api/user/createUser",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"user",
+								"createUser"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Create User",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "token",
+										"value": "",
+										"type": "text",
+										"disabled": true
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"username\": \"Chandra102\",\n    \"email\": \"cppurbiya102@gmail.com\",\n    \"password\": \"12345678\",\n    \"\": \"\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "localhost:5111/api/user/createUser",
+									"host": [
+										"localhost"
+									],
+									"port": "5111",
+									"path": [
+										"api",
+										"user",
+										"createUser"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "399"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"18f-xXBMsU9IY+F6Lu7ICKvt5nF8CTw\""
+								},
+								{
+									"key": "Date",
+									"value": "Sun, 11 Feb 2024 22:59:24 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"ok\": true,\n    \"data\": {\n        \"user\": {\n            \"username\": \"Chandra102\",\n            \"email\": \"cppurbiya102@gmail.com\",\n            \"role\": \"user\",\n            \"_id\": \"6772b3547282a6e6787fd4b7\"\n        },\n        \"longToken\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjcHB1cmJpeWExMDJAZ21haWwuY29tIiwiaWF0IjoxNzM1NTcwMjYwLCJleHAiOjE4MzAyNDMwNjB9.t7DUQ3MW-MuNPRo0mmRA0ar-9C8Hajk2133xpzqKOhI\"\n    },\n    \"errors\": [],\n    \"message\": \"\"\n}"
+						},
+						{
+							"name": "Create Admin",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "token",
+										"value": "",
+										"type": "text",
+										"disabled": true
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"username\": \"Chandra103\",\n    \"email\": \"cppurbiya103@gmail.com\",\n    \"password\": \"12345678\",\n    \"role\": \"admin\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/api/user/createUser",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"api",
+										"user",
+										"createUser"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Date",
+									"value": "Tue, 13 Feb 2024 19:52:00 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "CF-Ray",
+									"value": "854f9bf9d9d00ff6-MRS"
+								},
+								{
+									"key": "CF-Cache-Status",
+									"value": "DYNAMIC"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"14e-urVVLj9T0QWVoxYkrQfarIXvVLQ\""
+								},
+								{
+									"key": "Vary",
+									"value": "Accept-Encoding"
+								},
+								{
+									"key": "rndr-id",
+									"value": "ce61deee-31c9-4dcc"
+								},
+								{
+									"key": "x-powered-by",
+									"value": "Express"
+								},
+								{
+									"key": "x-render-origin-server",
+									"value": "Render"
+								},
+								{
+									"key": "Server",
+									"value": "cloudflare"
+								},
+								{
+									"key": "Content-Encoding",
+									"value": "br"
+								},
+								{
+									"key": "alt-svc",
+									"value": "h3=\":443\"; ma=86400"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"ok\": true,\n    \"data\": {\n        \"user\": {\n            \"username\": \"Chandra103\",\n            \"email\": \"cppurbiya103@gmail.com\",\n            \"role\": \"admin\",\n            \"_id\": \"6772b3901262f78aad75bd63\"\n        },\n        \"longToken\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjcHB1cmJpeWExMDNAZ21haWwuY29tIiwiaWF0IjoxNzM1NTcwMzIwLCJleHAiOjE4MzAyNDMxMjB9.8HBx4bAvPd9npsZEXrpIvDY3-EZo7WIbkLYhLr0TC58\"\n    },\n    \"errors\": [],\n    \"message\": \"\"\n}"
+						},
+						{
+							"name": "Create Super Admin",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"username\": \"Chandra104\",\n    \"email\": \"cppurbiya104@gmail.com\",\n    \"password\": \"12345678\",\n    \"role\": \"superadmin\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/api/user/createUser",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"api",
+										"user",
+										"createUser"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Date",
+									"value": "Tue, 13 Feb 2024 19:52:00 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "CF-Ray",
+									"value": "854f9bf9d9d00ff6-MRS"
+								},
+								{
+									"key": "CF-Cache-Status",
+									"value": "DYNAMIC"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"14e-urVVLj9T0QWVoxYkrQfarIXvVLQ\""
+								},
+								{
+									"key": "Vary",
+									"value": "Accept-Encoding"
+								},
+								{
+									"key": "rndr-id",
+									"value": "ce61deee-31c9-4dcc"
+								},
+								{
+									"key": "x-powered-by",
+									"value": "Express"
+								},
+								{
+									"key": "x-render-origin-server",
+									"value": "Render"
+								},
+								{
+									"key": "Server",
+									"value": "cloudflare"
+								},
+								{
+									"key": "Content-Encoding",
+									"value": "br"
+								},
+								{
+									"key": "alt-svc",
+									"value": "h3=\":443\"; ma=86400"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"ok\": true,\n    \"data\": {\n        \"user\": {\n            \"username\": \"Chandra104\",\n            \"email\": \"cppurbiya104@gmail.com\",\n            \"role\": \"superadmin\",\n            \"_id\": \"6772b3aa1262f78aad75bd66\"\n        },\n        \"longToken\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjcHB1cmJpeWExMDRAZ21haWwuY29tIiwiaWF0IjoxNzM1NTcwMzQ2LCJleHAiOjE4MzAyNDMxNDZ9.ygpRClPYb5HaVVbhppRJESecewmbnvTuqL1T29t6yjw\"\n    },\n    \"errors\": [],\n    \"message\": \"\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Login User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"    const jsonData = pm.response.json();",
+									"",
+									"",
+									"    pm.expect(jsonData.data.longToken).to.not.null",
+									"",
+									"    pm.collectionVariables.set(\"longToken\", jsonData.data.longToken);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "token",
+								"value": "",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"cppurbiya104@gmail.com\",\n    \"password\": \"12345678\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/api/user/loginUser",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"user",
+								"loginUser"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Create User",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "token",
+										"value": "",
+										"type": "text",
+										"disabled": true
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"username\": \"Chandra105\",\n    \"email\": \"cppurbiya105@gmail.com\",\n    \"password\": \"12345678\",\n    \"\": \"\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "localhost:5111/api/user/createUser",
+									"host": [
+										"localhost"
+									],
+									"port": "5111",
+									"path": [
+										"api",
+										"user",
+										"createUser"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "399"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"18f-xXBMsU9IY+F6Lu7ICKvt5nF8CTw\""
+								},
+								{
+									"key": "Date",
+									"value": "Sun, 11 Feb 2024 22:59:24 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"ok\": true,\n    \"data\": {\n        \"user\": {\n            \"username\": \"Chandra105\",\n            \"email\": \"cppurbiya105@gmail.com\",\n            \"role\": \"user\",\n            \"_id\": \"6772b3f37282a6e6787fd4ba\"\n        },\n        \"longToken\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjcHB1cmJpeWExMDVAZ21haWwuY29tIiwiaWF0IjoxNzM1NTcwNDE5LCJleHAiOjE4MzAyNDMyMTl9.EJyyLUcR2BIHWxYB7Vi0hVDq-a5_Ecs-TYNmQM-sSac\"\n    },\n    \"errors\": [],\n    \"message\": \"\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Get User",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "token",
+								"value": "",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/api/user/getUser/?id=6772b32d1262f78aad75bd60",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"user",
+								"getUser",
+								""
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "6772b32d1262f78aad75bd60"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete user",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"id\": \"user:super@mail.com\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/api/user/deleteUser/?id=6772b32d1262f78aad75bd60",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"user",
+								"deleteUser",
+								""
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "6772b32d1262f78aad75bd60"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "School",
+			"item": [
+				{
+					"name": "Create School",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"School201\",\n    \"address\": \"address201\",\n    \"phone\": \"+919875286195\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/api/school/createSchool",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"school",
+								"createSchool"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update School",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"School209\",\n    \"address\": \"address1234\",\n    \"phone\": \"+919875286195\",\n    \"id\": \"6772b4ae1262f78aad75bd70\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/api/school/updateSchool",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"school",
+								"updateSchool"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get school",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/school/getSchool?id=6772b4ae1262f78aad75bd70",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"school",
+								"getSchool"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "6772b4ae1262f78aad75bd70"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Schools",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/school/getAllSchool",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"school",
+								"getAllSchool"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete School",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/api/school/deleteSchool?id=6772b4ae1262f78aad75bd70",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"school",
+								"deleteSchool"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "6772b4ae1262f78aad75bd70"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Class",
+			"item": [
+				{
+					"name": "Create",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Class - 9\",\n    \"schoolId\": \"6772b5341262f78aad75bd7e\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/api/class/createClass",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"class",
+								"createClass"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Create",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"Class - 2nd\",\n    \"schoolId\": \"6772b5341262f78aad75bd7e\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/api/class/createClass",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"api",
+										"class",
+										"createClass"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Date",
+									"value": "Tue, 13 Feb 2024 19:53:35 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "CF-Ray",
+									"value": "854f9e48ea72129a-MRS"
+								},
+								{
+									"key": "CF-Cache-Status",
+									"value": "DYNAMIC"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"9b-YDlXr0WRay2+pGGOArQTRa7ble4\""
+								},
+								{
+									"key": "Vary",
+									"value": "Accept-Encoding"
+								},
+								{
+									"key": "rndr-id",
+									"value": "61ff67af-78fe-45ab"
+								},
+								{
+									"key": "x-powered-by",
+									"value": "Express"
+								},
+								{
+									"key": "x-render-origin-server",
+									"value": "Render"
+								},
+								{
+									"key": "Server",
+									"value": "cloudflare"
+								},
+								{
+									"key": "Content-Encoding",
+									"value": "br"
+								},
+								{
+									"key": "alt-svc",
+									"value": "h3=\":443\"; ma=86400"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"ok\": true,\n    \"data\": {\n        \"name\": \"Class - 2nd\",\n        \"schoolId\": \"6772b5341262f78aad75bd7e\",\n        \"students\": [],\n        \"_id\": \"6772b59c1262f78aad75bd88\",\n        \"__v\": 0\n    },\n    \"errors\": [],\n    \"message\": \"\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Update",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Class-3rd\",\n    \"schoolId\": \"6772b5341262f78aad75bd7e\",\n    \"id\": \"6772b59c1262f78aad75bd88\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/api/class/updateClass",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"class",
+								"updateClass"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Update",
+							"originalRequest": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"Class-4rd\",\n    \"schoolId\": \"6772b5341262f78aad75bd7e\",\n    \"id\": \"6772b59c1262f78aad75bd88\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/api/class/updateClass",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"api",
+										"class",
+										"updateClass"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "137"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"89-3HK9W+4d8gGgFm2ZDCjFnRODEu8\""
+								},
+								{
+									"key": "Date",
+									"value": "Tue, 13 Feb 2024 19:59:09 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"ok\": true,\n    \"data\": {\n        \"id\": \"6772b59c1262f78aad75bd88\",\n        \"modifiedCount\": 1,\n        \"upsertedCount\": 0\n    },\n    \"errors\": [],\n    \"message\": \"\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Get",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/class/getClass?id=6772b59c1262f78aad75bd88",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"class",
+								"getClass"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "6772b59c1262f78aad75bd88"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Get",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/api/class/getClass?id=6772b59c1262f78aad75bd88",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"api",
+										"class",
+										"getClass"
+									],
+									"query": [
+										{
+											"key": "id",
+											"value": "6772b59c1262f78aad75bd88"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Date",
+									"value": "Tue, 13 Feb 2024 20:00:49 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "CF-Ray",
+									"value": "854fa8e36d4c129a-MRS"
+								},
+								{
+									"key": "CF-Cache-Status",
+									"value": "DYNAMIC"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"bf-HIsWd/9eFvQI0KgsstzHcNAhDtw\""
+								},
+								{
+									"key": "Vary",
+									"value": "Accept-Encoding"
+								},
+								{
+									"key": "rndr-id",
+									"value": "d7dbdfc0-14d9-44af"
+								},
+								{
+									"key": "x-powered-by",
+									"value": "Express"
+								},
+								{
+									"key": "x-render-origin-server",
+									"value": "Render"
+								},
+								{
+									"key": "Server",
+									"value": "cloudflare"
+								},
+								{
+									"key": "Content-Encoding",
+									"value": "br"
+								},
+								{
+									"key": "alt-svc",
+									"value": "h3=\":443\"; ma=86400"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"ok\": true,\n    \"data\": {\n        \"_id\": \"6772b59c1262f78aad75bd88\",\n        \"name\": \"Class-4rd\",\n        \"schoolId\": \"6772b5341262f78aad75bd7e\",\n        \"students\": [],\n        \"__v\": 0\n    },\n    \"errors\": [],\n    \"message\": \"\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Delete",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/api/class/deleteClass?id=6772b59c1262f78aad75bd88",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"class",
+								"deleteClass"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "6772b59c1262f78aad75bd88"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Delete",
+							"originalRequest": {
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/api/class/deleteClass?id=6772b59c1262f78aad75bd88",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"api",
+										"class",
+										"deleteClass"
+									],
+									"query": [
+										{
+											"key": "id",
+											"value": "6772b59c1262f78aad75bd88"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Date",
+									"value": "Tue, 13 Feb 2024 20:01:14 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "CF-Ray",
+									"value": "854fa9808e3d129a-MRS"
+								},
+								{
+									"key": "CF-Cache-Status",
+									"value": "DYNAMIC"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"37-GrRQ6JlYrDdnFoX8s1PrS6h8tGg\""
+								},
+								{
+									"key": "Vary",
+									"value": "Accept-Encoding"
+								},
+								{
+									"key": "rndr-id",
+									"value": "151a9c87-0258-4241"
+								},
+								{
+									"key": "x-powered-by",
+									"value": "Express"
+								},
+								{
+									"key": "x-render-origin-server",
+									"value": "Render"
+								},
+								{
+									"key": "Server",
+									"value": "cloudflare"
+								},
+								{
+									"key": "Content-Encoding",
+									"value": "br"
+								},
+								{
+									"key": "alt-svc",
+									"value": "h3=\":443\"; ma=86400"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"ok\": false,\n    \"data\": {},\n    \"errors\": [],\n    \"message\": \"Requested undefined not present in system\"\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Student",
+			"item": [
+				{
+					"name": "Create",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"student45\",\n    \"classId\": \"6772b6bd1262f78aad75bd9d\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/api/student/createStudent",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"student",
+								"createStudent"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Create",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"student46\",\n    \"classId\": \"6772b6bd1262f78aad75bd9d\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/api/student/createStudent",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"api",
+										"student",
+										"createStudent"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Date",
+									"value": "Tue, 13 Feb 2024 20:02:18 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "CF-Ray",
+									"value": "854fab09f9ad129a-MRS"
+								},
+								{
+									"key": "CF-Cache-Status",
+									"value": "DYNAMIC"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"a1-H8BAY/8eaqmICNxpxINZxJ9ykjg\""
+								},
+								{
+									"key": "Vary",
+									"value": "Accept-Encoding"
+								},
+								{
+									"key": "rndr-id",
+									"value": "ef06ca95-d560-4492"
+								},
+								{
+									"key": "x-powered-by",
+									"value": "Express"
+								},
+								{
+									"key": "x-render-origin-server",
+									"value": "Render"
+								},
+								{
+									"key": "Server",
+									"value": "cloudflare"
+								},
+								{
+									"key": "Content-Encoding",
+									"value": "br"
+								},
+								{
+									"key": "alt-svc",
+									"value": "h3=\":443\"; ma=86400"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"ok\": true,\n    \"data\": {\n        \"name\": \"student46\",\n        \"schoolId\": \"6772b5341262f78aad75bd7e\",\n        \"classId\": \"6772b6bd1262f78aad75bd9d\",\n        \"_id\": \"6772b6f41262f78aad75bda8\",\n        \"__v\": 0\n    },\n    \"errors\": [],\n    \"message\": \"\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Update",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"student49\",\n    \"classId\": \"6772b6bd1262f78aad75bd9d\",\n    \"id\": \"6772b6f41262f78aad75bda8\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/api/student/updateStudent",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"student",
+								"updateStudent"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Update",
+							"originalRequest": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"student50\",\n    \"classId\": \"6772b6bd1262f78aad75bd9d\",\n    \"id\": \"6772b6f41262f78aad75bda8\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/api/student/updateStudent",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"api",
+										"student",
+										"updateStudent"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "140"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"8c-Zo3nW84a/WMbjdzj0SyG4Y5Qe8s\""
+								},
+								{
+									"key": "Date",
+									"value": "Tue, 13 Feb 2024 20:04:05 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"ok\": true,\n    \"data\": {\n        \"id\": \"6772b6f41262f78aad75bda8\",\n        \"modifiedCount\": 1,\n        \"upsertedCount\": 0\n    },\n    \"errors\": [],\n    \"message\": \"\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Get",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/student/getStudent?id=6772b6f41262f78aad75bda8",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"student",
+								"getStudent"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "6772b6f41262f78aad75bda8"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Get",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/api/student/getStudent?id=6772b6f41262f78aad75bda8",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"api",
+										"student",
+										"getStudent"
+									],
+									"query": [
+										{
+											"key": "id",
+											"value": "6772b6f41262f78aad75bda8"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Date",
+									"value": "Tue, 13 Feb 2024 20:04:24 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "CF-Ray",
+									"value": "854fae22daf5129a-MRS"
+								},
+								{
+									"key": "CF-Cache-Status",
+									"value": "DYNAMIC"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"a0-ZN1fQETb7yN9HqSyidgUB3tgC5M\""
+								},
+								{
+									"key": "Vary",
+									"value": "Accept-Encoding"
+								},
+								{
+									"key": "rndr-id",
+									"value": "efcc7c8e-4b9a-47a5"
+								},
+								{
+									"key": "x-powered-by",
+									"value": "Express"
+								},
+								{
+									"key": "x-render-origin-server",
+									"value": "Render"
+								},
+								{
+									"key": "Server",
+									"value": "cloudflare"
+								},
+								{
+									"key": "Content-Encoding",
+									"value": "br"
+								},
+								{
+									"key": "alt-svc",
+									"value": "h3=\":443\"; ma=86400"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"ok\": true,\n    \"data\": {\n        \"_id\": \"6772b6f41262f78aad75bda8\",\n        \"name\": \"student50\",\n        \"schoolId\": \"6772b5341262f78aad75bd7e\",\n        \"classId\": \"6772b6bd1262f78aad75bd9d\",\n        \"__v\": 0\n    },\n    \"errors\": [],\n    \"message\": \"\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Delete",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/api/student/deleteStudent?id=6772b6f41262f78aad75bda8",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"student",
+								"deleteStudent"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "6772b6f41262f78aad75bda8"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Delete",
+							"originalRequest": {
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/api/student/deleteStudent?id=6772b6da1262f78aad75bda2",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"api",
+										"student",
+										"deleteStudent"
+									],
+									"query": [
+										{
+											"key": "id",
+											"value": "6772b6da1262f78aad75bda2"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Date",
+									"value": "Tue, 13 Feb 2024 20:04:42 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "CF-Ray",
+									"value": "854fae956f03129a-MRS"
+								},
+								{
+									"key": "CF-Cache-Status",
+									"value": "DYNAMIC"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"37-GrRQ6JlYrDdnFoX8s1PrS6h8tGg\""
+								},
+								{
+									"key": "Vary",
+									"value": "Accept-Encoding"
+								},
+								{
+									"key": "rndr-id",
+									"value": "d3b67855-d4b3-4157"
+								},
+								{
+									"key": "x-powered-by",
+									"value": "Express"
+								},
+								{
+									"key": "x-render-origin-server",
+									"value": "Render"
+								},
+								{
+									"key": "Server",
+									"value": "cloudflare"
+								},
+								{
+									"key": "Content-Encoding",
+									"value": "br"
+								},
+								{
+									"key": "alt-svc",
+									"value": "h3=\":443\"; ma=86400"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"ok\": true,\n    \"data\": {\n        \"id\": \"6772b6da1262f78aad75bda2\",\n        \"message\": \"Requested student is successfully deleted\"\n    },\n    \"errors\": [],\n    \"message\": \"\"\n}"
+						}
+					]
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "apikey",
+		"apikey": [
+			{
+				"key": "value",
+				"value": "{{shortToken}}",
+				"type": "string"
+			},
+			{
+				"key": "key",
+				"value": "token",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "url",
+			"value": "https://axion-a9ty.onrender.com",
+			"type": "string"
+		},
+		{
+			"key": "longToken",
+			"value": ""
+		},
+		{
+			"key": "longtoken",
+			"value": ""
+		},
+		{
+			"key": "shortToken",
+			"value": ""
+		}
+	]
+}
